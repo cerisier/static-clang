@@ -7,7 +7,7 @@ common          --incompatible_strict_action_env
 
 # build           --dynamic_mode=off
 # build           --force_pic
-build           --features=thin_lto
+# build           --features=thin_lto
 # ThinLTO feature doesn't exist in Zig toolchain, so we must set the flags manually.
 # It also doesn't support LTO on darwin targets, so we can't set this globally.
 # Instead, we configure copt/linkopt inside the toolchain itself (with a WORKSPACE patch).

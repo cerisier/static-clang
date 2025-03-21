@@ -4,18 +4,51 @@ filegroup(
 )
 
 cc_library(
+    name = "scrt0",
+    srcs = ["libc/glibc/sysdeps/x86_64/start.S"],
+    copts = [
+        "-Wno-nonportable-include-path",
+        "-Wa,--noexecstack",
+        "-include",
+        "$(location libc/glibc/include/libc-modules.h)",
+    ],
+    local_defines = [
+        "_LIBC_REENTRANT",
+        "MODULE_NAME=libc",
+        "PIC",
+        "SHARED",
+        "TOP_NAMESPACE=glibc",
+        "ASSEMBLER",
+    ],
+    additional_compiler_inputs = [
+        "libc/glibc/include/libc-modules.h",
+    ],
+    deps = [":c"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "libcinclude",
+    includes = [
+        "include",
+    ],
+    hdrs = glob(["include/*"]),
+)
+
+cc_library(
     name = "c",
     includes = [
+        # "libc/include/any-linux-any/linux",
+        "libc/include/x86_64-linux-gnu",
         "libc/include/generic-glibc",
         "libc/include/any-linux-any",
-        "libc/include/any-linux-any/linux",
-        "libc/include/arm-linux-gnueabi",
     ],
     hdrs = glob([
-        "libc/include/generic-glibc/**",
         "libc/include/any-linux-any/**",
-        "libc/include/arm-linux-gnueabi/**",
+        "libc/include/generic-glibc/**",
+        "libc/include/x86_64-linux-gnu/**",
     ]),
+    deps = [":libcinclude"],
     visibility = ["//visibility:public"],
 )
 
@@ -151,3 +184,4 @@ cc_library(
     deps = [":c"],
     visibility = ["//visibility:public"],
 )
+

@@ -8,8 +8,25 @@ genrule(
 cc_binary(
     name = "main",
     srcs = ["main.cc"],
-    copts = ["-nostdinc++", "-std=c++23"],
-    # deps = ["//lib:c++"],
+    copts = [
+        "-fno-builtin",
+        "-std=c++23",
+    ],
+    linkopts = [
+        "-nodefaultlibs",
+        "-nobuiltininc",
+        "-nostdinc++",
+        # "-nostartfiles",
+        "-nostdlib",
+        "-nostdlibinc",
+        "-lc",
+    ],
+    deps = [
+        "//lib:c",
+        "//lib:scrt0",
+        "//compiler-rt-20.1.1.src/lib/builtins:builtins",
+        "//compiler-rt-20.1.1.src/lib/builtins:crt",
+    ],
 )
 
 # load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
