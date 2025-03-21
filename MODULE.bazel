@@ -16,9 +16,10 @@ llvm_configure = use_repo_rule("@llvm-raw//utils/bazel:configure.bzl", "llvm_con
 llvm_configure(name = "llvm-project")
 
 register_toolchains(
-    "@zig_sdk//toolchain:linux_amd64_musl",
-    "@zig_sdk//libc_aware/toolchain:linux_arm64_musl",
-    "@zig_sdk//libc_aware/toolchain:linux_amd64_musl",
-    "@zig_sdk//toolchain:darwin_amd64",
-    "@zig_sdk//toolchain:darwin_arm64",
+    # "@zig_sdk//toolchain:linux_amd64_gnu.2.31",
+    # "@zig_sdk//toolchain:linux_amd64_musl",
+    # "@zig_sdk//libc_aware/toolchain:linux_arm64_musl",
+    # "@zig_sdk//libc_aware/toolchain:linux_amd64_musl",
+    # "@zig_sdk//toolchain:darwin_amd64",
+    # "@zig_sdk//toolchain:darwin_arm64",
 )
