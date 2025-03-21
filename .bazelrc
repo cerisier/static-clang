@@ -1,41 +1,28 @@
-common --dynamic_mode=off
-# Upstream builds PIE, but it doesn't have much benefit when fully statically linked.
-#common --force_pic
+common          --experimental_platform_in_output_dir
+common          --enable_platform_specific_config
 
-common --bes_results_url=https://app.buildbuddy.io/invocation/
-common --bes_backend=grpcs://remote.buildbuddy.io
-common --remote_cache=grpcs://remote.buildbuddy.io
-common --remote_download_toplevel
-common --nobuild_runfile_links
-common --remote_timeout=3600
-common --remote_executor=grpcs://remote.buildbuddy.io
-common --noexperimental_throttle_remote_action_building
-common --jobs=800
+common          --incompatible_enable_cc_toolchain_resolution
+common          --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common          --incompatible_strict_action_env
 
-common --extra_execution_platforms=//rbe_platform
-common --host_platform=//rbe_platform
-
-common --platforms @zig_sdk//libc_aware/platform:linux_amd64_musl
-common --experimental_platform_in_output_dir
-
-common --incompatible_enable_cc_toolchain_resolution
-common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
-common --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
-common --host_action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
-common --incompatible_strict_action_env
-
-# TODO(zbarsky): This doesn't compile due to "zlib.h" vs <zlib.h> usage.
-common --@llvm_zlib//:llvm_enable_zlib=false
-common --experimental_merged_skyframe_analysis_execution
-
-common --features=thin_lto
+build           --dynamic_mode=off
+build           --force_pic
+build           --features=thin_lto
 # ThinLTO feature doesn't exist in Zig toolchain, so we must set the flags manually.
 # It also doesn't support LTO on darwin targets, so we can't set this globally.
 # Instead, we configure copt/linkopt inside the toolchain itself (with a WORKSPACE patch).
 #common --copt -flto=thin
 
 # Compilation Flags
-common -c opt
-common --strip=always
-common --copt -ffunction-sections
-common --copt -fdata-sections
+build           -c opt
+build           --strip=always
+build           --copt=-ffunction-sections
+build           --copt=-fdata-sections
+build           --linkopt=-Wl,--gc-sections
+build           --linkopt=-Wl,--strip-all
+build           --linkopt=-Wl,-S
+build           --linkopt=-Wl,-s
+build           --linkopt=-Wl,-dead_strip
+
+build:macos     --sandbox_add_mount_pair=/var/tmp
+build:linux     --sandbox_add_mount_pair=/tmp
