@@ -4,13 +4,46 @@ filegroup(
 )
 
 cc_library(
-    name = "scrt0",
+    name = "init",
+    srcs = ["libc/glibc/csu/init.c"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "abi_note",
+    srcs = [
+        "libc/glibc/csu/abi-note.S",
+    ],
+    copts = [
+        "-Wa,--noexecstack",
+    ],
+    local_defines = [
+        "_LIBC_REENTRANT",
+        "MODULE_NAME=libc",
+        "TOP_NAMESPACE=glibc",
+        "ASSEMBLER",
+    ],
+    hdrs = [
+        "libc/glibc/csu/abi-tag.h"
+    ],
+    includes = [
+        "libc/glibc/csu",
+    ],
+    deps = [":c"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "start",
     srcs = ["libc/glibc/sysdeps/x86_64/start.S"],
     copts = [
         "-Wno-nonportable-include-path",
         "-Wa,--noexecstack",
         "-include",
         "$(location libc/glibc/include/libc-modules.h)",
+        "-DMODULE_NAME=libc",
+        "-include",
+        "$(location libc/glibc/include/libc-symbols.h)",
     ],
     local_defines = [
         "_LIBC_REENTRANT",
@@ -22,8 +55,15 @@ cc_library(
     ],
     additional_compiler_inputs = [
         "libc/glibc/include/libc-modules.h",
+        "libc/glibc/include/libc-symbols.h",
     ],
     deps = [":c"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "Scrt1",
+    deps = [":start", ":init", ":abi_note"],
     visibility = ["//visibility:public"],
 )
 
@@ -37,16 +77,46 @@ cc_library(
 
 cc_library(
     name = "c",
+    # order matters
     includes = [
-        # "libc/include/any-linux-any/linux",
+        "libc/glibc/include",
+        "libc/glibc/sysdeps/unix/sysv/linux/x86_64",
+        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/unix/sysv/linux/generic",
+        "libc/glibc/sysdeps/unix/sysv/linux/include",
+        "libc/glibc/sysdeps/unix/sysv/linux",
+        # "libc/glibc/sysdeps/nptl",
+        "libc/glibc/sysdeps/pthread",
+        "libc/glibc/sysdeps/unix/sysv",
+        "libc/glibc/sysdeps/unix/x86_64",
+        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/generic",
+
+        "libc/glibc",
         "libc/include/x86_64-linux-gnu",
         "libc/include/generic-glibc",
+        # "libc/include/{arch}-linux-any",
         "libc/include/any-linux-any",
     ],
     hdrs = glob([
-        "libc/include/any-linux-any/**",
-        "libc/include/generic-glibc/**",
+        "libc/glibc/include/**",
+        "libc/glibc/sysdeps/unix/sysv/linux/x86_64/**",
+        "libc/glibc/sysdeps/x86_64/**",
+        # "libc/glibc/sysdeps/unix/sysv/linux/generic/**",
+        "libc/glibc/sysdeps/unix/sysv/linux/include/**",
+        "libc/glibc/sysdeps/unix/sysv/linux/**",
+        # "libc/glibc/sysdeps/nptl/**",
+        "libc/glibc/sysdeps/pthread/**",
+        "libc/glibc/sysdeps/unix/sysv/**",
+        "libc/glibc/sysdeps/unix/x86_64/**",
+        "libc/glibc/sysdeps/x86_64/**",
+        "libc/glibc/sysdeps/generic/**",
+
+        "libc/glibc/**",
         "libc/include/x86_64-linux-gnu/**",
+        "libc/include/generic-glibc/**",
+        # "libc/include/{arch}-linux-any/**",
+        "libc/include/any-linux-any/**",
     ]),
     deps = [":libcinclude"],
     visibility = ["//visibility:public"],
