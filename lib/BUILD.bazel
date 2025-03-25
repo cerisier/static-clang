@@ -1,8 +1,3 @@
-filegroup(
-    name = "libcxx_threads",
-    visibility = ["//visibility:public"],
-)
-
 cc_library(
     name = "init",
     srcs = ["libc/glibc/csu/init.c"],
@@ -23,13 +18,27 @@ cc_library(
         "TOP_NAMESPACE=glibc",
         "ASSEMBLER",
     ],
-    hdrs = [
-        "libc/glibc/csu/abi-tag.h"
-    ],
+    hdrs = glob(["libc/glibc/**"]),
     includes = [
         "libc/glibc/csu",
+
+        # COMMON
+        "libc/glibc/include",
+        "libc/glibc/sysdeps/unix/sysv/linux/x86_64",
+        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/unix/sysv/linux/generic",
+        "libc/glibc/sysdeps/unix/sysv/linux/include",
+        "libc/glibc/sysdeps/unix/sysv/linux",
+        # "libc/glibc/sysdeps/nptl",
+        "libc/glibc/sysdeps/pthread",
+        "libc/glibc/sysdeps/unix/sysv",
+        "libc/glibc/sysdeps/unix/x86_64",
+        "libc/glibc/sysdeps/unix",
+        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/generic",
+        "libc/glibc",
     ],
-    deps = [":c"],
+    implementation_deps = [":c"],
     visibility = ["//visibility:public"],
 )
 
@@ -57,7 +66,62 @@ cc_library(
         "libc/glibc/include/libc-modules.h",
         "libc/glibc/include/libc-symbols.h",
     ],
-    deps = [":c"],
+    hdrs = glob(["libc/glibc/**"]),
+
+    # hdrs = glob([
+    #     "libc/glibc/**/*.h",
+    # ], exclude = [
+    #     "libc/glibc/sysdeps/**",
+    #     "libc/glibc/include/**",
+    # ]) + glob([
+    #     "libc/glibc/include/*.h",
+    #     "libc/glibc/include/*.h",
+    # ])
+    # + glob(
+    #     [
+    #         "libc/glibc/sysdeps/unix/sysv/linux/x86_64/**",
+    #         "libc/glibc/sysdeps/x86_64/**",
+    #         "libc/glibc/sysdeps/unix/sysv/linux/generic/**",
+    #         "libc/glibc/sysdeps/unix/sysv/linux/include/**",
+    #     ],
+    #     allow_empty = True
+    # ) + glob(
+    #     [
+    #         "libc/glibc/sysdeps/unix/sysv/linux/*",
+    #         "libc/glibc/sysdeps/unix/sysv/linux/bits/**",
+    #         "libc/glibc/sysdeps/unix/sysv/linux/sys/**",
+    #     ],
+    #     allow_empty = True
+    # )
+    # + glob([
+    #         # "libc/glibc/sysdeps/nptl/**",
+    #         "libc/glibc/sysdeps/pthread/**",
+    #         "libc/glibc/sysdeps/unix/x86_64/**",
+    #         # "libc/glibc/sysdeps/x86_64/**",
+    #         "libc/glibc/sysdeps/generic/**",
+    #     ],
+    #     allow_empty = True
+    # ),
+    includes = [
+        "libc/glibc/include",
+        "libc/glibc/sysdeps/unix/sysv/linux/x86_64",
+        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/unix/sysv/linux/generic",
+        "libc/glibc/sysdeps/unix/sysv/linux/include",
+        "libc/glibc/sysdeps/unix/sysv/linux",
+        # "libc/glibc/sysdeps/nptl",
+        "libc/glibc/sysdeps/pthread",
+        "libc/glibc/sysdeps/unix/sysv",
+        "libc/glibc/sysdeps/unix/x86_64",
+        "libc/glibc/sysdeps/unix",
+        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/generic",
+
+        "libc/glibc",
+    ],
+    implementation_deps = [
+        ":c",
+    ],
     visibility = ["//visibility:public"],
 )
 
@@ -79,46 +143,18 @@ cc_library(
     name = "c",
     # order matters
     includes = [
-        "libc/glibc/include",
-        "libc/glibc/sysdeps/unix/sysv/linux/x86_64",
-        "libc/glibc/sysdeps/x86_64",
-        "libc/glibc/sysdeps/unix/sysv/linux/generic",
-        "libc/glibc/sysdeps/unix/sysv/linux/include",
-        "libc/glibc/sysdeps/unix/sysv/linux",
-        # "libc/glibc/sysdeps/nptl",
-        "libc/glibc/sysdeps/pthread",
-        "libc/glibc/sysdeps/unix/sysv",
-        "libc/glibc/sysdeps/unix/x86_64",
-        "libc/glibc/sysdeps/x86_64",
-        "libc/glibc/sysdeps/generic",
-
-        "libc/glibc",
         "libc/include/x86_64-linux-gnu",
         "libc/include/generic-glibc",
-        # "libc/include/{arch}-linux-any",
+        # "libc/include/{arch}-linux-any",  # non-existent for x86_64
         "libc/include/any-linux-any",
     ],
     hdrs = glob([
-        "libc/glibc/include/**",
-        "libc/glibc/sysdeps/unix/sysv/linux/x86_64/**",
-        "libc/glibc/sysdeps/x86_64/**",
-        # "libc/glibc/sysdeps/unix/sysv/linux/generic/**",
-        "libc/glibc/sysdeps/unix/sysv/linux/include/**",
-        "libc/glibc/sysdeps/unix/sysv/linux/**",
-        # "libc/glibc/sysdeps/nptl/**",
-        "libc/glibc/sysdeps/pthread/**",
-        "libc/glibc/sysdeps/unix/sysv/**",
-        "libc/glibc/sysdeps/unix/x86_64/**",
-        "libc/glibc/sysdeps/x86_64/**",
-        "libc/glibc/sysdeps/generic/**",
-
-        "libc/glibc/**",
         "libc/include/x86_64-linux-gnu/**",
         "libc/include/generic-glibc/**",
         # "libc/include/{arch}-linux-any/**",
         "libc/include/any-linux-any/**",
     ]),
-    deps = [":libcinclude"],
+    # deps = [":libcinclude"],
     visibility = ["//visibility:public"],
 )
 
@@ -139,6 +175,7 @@ cc_library(
         "_LIBCPP_ABI_NAMESPACE=__1",
     ],
     copts = [
+        "-nostdinc",
         "-nostdinc++",
         "-std=c++23",
         "-Wno-user-defined-literals",
@@ -166,8 +203,25 @@ cc_library(
         "libcxx/src",
         "libcxxabi/include",
         "libcxxabi/src",
+
+        "libc/include/x86_64-linux-gnu",
+        "libc/include/generic-glibc",
+        "libc/include/x86-linux-any",  # std.zig.target.osArchName
+        "libc/include/any-linux-any",
+
+        "include"
     ],
-    hdrs = glob(["libcxx/include/**", "libcxxabi/include/**"]),
+    hdrs = glob([
+        "libcxx/include/**",
+        "libcxxabi/include/**",
+
+        "libc/include/x86_64-linux-gnu/**",
+        "libc/include/generic-glibc/**",
+        "libc/include/x86-linux-any/**",
+        "libc/include/any-linux-any/**",
+
+        "include/**",
+    ]),
     textual_hdrs = glob([
         "libcxx/src/**/*.h",
         "libcxx/src/**/*.ipp",
@@ -251,7 +305,6 @@ cc_library(
         "libcxxabi/src/stdlib_stdexcept.cpp",
         "libcxxabi/src/stdlib_typeinfo.cpp",
     ],
-    deps = [":c"],
+    # deps = [":c"],
     visibility = ["//visibility:public"],
 )
-

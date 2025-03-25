@@ -15,6 +15,7 @@ cc_binary(
     linkopts = [
         "-nodefaultlibs",
         "-nobuiltininc",
+        "-nostdinc",
         "-nostdinc++",
         # "-nostartfiles",
         "-nostdlib",
@@ -22,10 +23,12 @@ cc_binary(
         "-lc",
     ],
     deps = [
+        "//lib:c++",
         "//lib:c",
-        "//lib:scrt0",
+        "//lib/libunwind",
+        "//lib:Scrt1",
         "//compiler-rt-20.1.1.src/lib/builtins:builtins",
-        "//compiler-rt-20.1.1.src/lib/builtins:crt",
+        # "//compiler-rt-20.1.1.src/lib/builtins:crt",
     ],
 )
 
