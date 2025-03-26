@@ -29,19 +29,35 @@ cc_library(
         "libc/glibc/csu",
 
         # COMMON
+        # "libc/glibc/include",
+        # "libc/glibc/sysdeps/unix/sysv/linux/x86_64",
+        # "libc/glibc/sysdeps/x86_64",
+        # "libc/glibc/sysdeps/unix/sysv/linux/generic",
+        # "libc/glibc/sysdeps/unix/sysv/linux/include",
+        # "libc/glibc/sysdeps/unix/sysv/linux",
+        # # "libc/glibc/sysdeps/nptl",
+        # "libc/glibc/sysdeps/pthread",
+        # "libc/glibc/sysdeps/unix/sysv",
+        # "libc/glibc/sysdeps/unix/x86_64",
+        # "libc/glibc/sysdeps/unix",
+        # "libc/glibc/sysdeps/x86_64",
+        # "libc/glibc/sysdeps/generic",
+
+
         "libc/glibc/include",
-        "libc/glibc/sysdeps/unix/sysv/linux/x86_64",
-        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/unix/sysv/linux/aarch64",
+        "libc/glibc/sysdeps/aarch64",
         "libc/glibc/sysdeps/unix/sysv/linux/generic",
         "libc/glibc/sysdeps/unix/sysv/linux/include",
         "libc/glibc/sysdeps/unix/sysv/linux",
         # "libc/glibc/sysdeps/nptl",
         "libc/glibc/sysdeps/pthread",
         "libc/glibc/sysdeps/unix/sysv",
-        "libc/glibc/sysdeps/unix/x86_64",
+        "libc/glibc/sysdeps/unix/aarch64",
         "libc/glibc/sysdeps/unix",
-        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/aarch64",
         "libc/glibc/sysdeps/generic",
+
         "libc/glibc",
     ],
     implementation_deps = [":c"],
@@ -50,7 +66,8 @@ cc_library(
 
 cc_library(
     name = "start",
-    srcs = ["libc/glibc/sysdeps/x86_64/start.S"],
+    # srcs = ["libc/glibc/sysdeps/x86_64/start.S"],
+    srcs = ["libc/glibc/sysdeps/aarch64/start.S"],
     copts = [
         "-nostdinc",
         "-Wno-nonportable-include-path",
@@ -111,18 +128,32 @@ cc_library(
     #     allow_empty = True
     # ),
     includes = [
+        # "libc/glibc/include",
+        # "libc/glibc/sysdeps/unix/sysv/linux/x86_64",
+        # "libc/glibc/sysdeps/x86_64",
+        # "libc/glibc/sysdeps/unix/sysv/linux/generic",
+        # "libc/glibc/sysdeps/unix/sysv/linux/include",
+        # "libc/glibc/sysdeps/unix/sysv/linux",
+        # # "libc/glibc/sysdeps/nptl",
+        # "libc/glibc/sysdeps/pthread",
+        # "libc/glibc/sysdeps/unix/sysv",
+        # "libc/glibc/sysdeps/unix/x86_64",
+        # "libc/glibc/sysdeps/unix",
+        # "libc/glibc/sysdeps/x86_64",
+        # "libc/glibc/sysdeps/generic",
+
         "libc/glibc/include",
-        "libc/glibc/sysdeps/unix/sysv/linux/x86_64",
-        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/unix/sysv/linux/aarch64",
+        "libc/glibc/sysdeps/aarch64",
         "libc/glibc/sysdeps/unix/sysv/linux/generic",
         "libc/glibc/sysdeps/unix/sysv/linux/include",
         "libc/glibc/sysdeps/unix/sysv/linux",
         # "libc/glibc/sysdeps/nptl",
         "libc/glibc/sysdeps/pthread",
         "libc/glibc/sysdeps/unix/sysv",
-        "libc/glibc/sysdeps/unix/x86_64",
+        "libc/glibc/sysdeps/unix/aarch64",
         "libc/glibc/sysdeps/unix",
-        "libc/glibc/sysdeps/x86_64",
+        "libc/glibc/sysdeps/aarch64",
         "libc/glibc/sysdeps/generic",
 
         "libc/glibc",
@@ -152,15 +183,25 @@ cc_library(
     name = "c",
     # order matters
     includes = [
-        "libc/include/x86_64-linux-gnu",
+        # "libc/include/x86_64-linux-gnu",
+        # "libc/include/generic-glibc",
+        # "libc/include/x86-linux-any",
+        # "libc/include/any-linux-any",
+
+        "libc/include/aarch64-linux-gnu",
         "libc/include/generic-glibc",
-        "libc/include/x86-linux-any",
+        "libc/include/aarch64-linux-any",
         "libc/include/any-linux-any",
     ],
     hdrs = glob([
-        "libc/include/x86_64-linux-gnu/**",
+        # "libc/include/x86_64-linux-gnu/**",
+        # "libc/include/generic-glibc/**",
+        # "libc/include/x86-linux-any/**",
+        # "libc/include/any-linux-any/**",
+
+        "libc/include/aarch64-linux-gnu/**",
         "libc/include/generic-glibc/**",
-        "libc/include/x86-linux-any/**",
+        "libc/include/aarch64-linux-any/**",
         "libc/include/any-linux-any/**",
     ]),
     visibility = ["//visibility:public"],
@@ -212,9 +253,14 @@ cc_library(
         "libcxxabi/include",
         "libcxxabi/src",
 
-        "libc/include/x86_64-linux-gnu",
+        # "libc/include/x86_64-linux-gnu",
+        # "libc/include/generic-glibc",
+        # "libc/include/x86-linux-any",  # std.zig.target.osArchName
+        # "libc/include/any-linux-any",
+
+        "libc/include/aarch64-linux-gnu",
         "libc/include/generic-glibc",
-        "libc/include/x86-linux-any",  # std.zig.target.osArchName
+        "libc/include/aarch64-linux-any",
         "libc/include/any-linux-any",
 
         "include"
@@ -223,9 +269,14 @@ cc_library(
         "libcxx/include/**",
         "libcxxabi/include/**",
 
-        "libc/include/x86_64-linux-gnu/**",
+        # "libc/include/x86_64-linux-gnu/**",
+        # "libc/include/generic-glibc/**",
+        # "libc/include/x86-linux-any/**",
+        # "libc/include/any-linux-any/**",
+
+        "libc/include/aarch64-linux-gnu/**",
         "libc/include/generic-glibc/**",
-        "libc/include/x86-linux-any/**",
+        "libc/include/aarch64-linux-any/**",
         "libc/include/any-linux-any/**",
 
         "include/**",

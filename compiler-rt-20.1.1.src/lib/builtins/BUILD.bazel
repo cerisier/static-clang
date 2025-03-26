@@ -1,3 +1,5 @@
+load(":targets.bzl", "atomic_helper_cc_library")
+
 filegroup(
     name = "srcs",
     srcs = [
@@ -214,9 +216,46 @@ filegroup(
     ],
 )
 
+filegroup(
+    name = "aarch64_arch_sources",
+    srcs = [
+        "cpu_model/aarch64.c",
+        "aarch64/fp_mode.c",
+    ],
+)
+
+filegroup(
+    name = "aarch64_sources",
+    srcs = [
+        ":srcs",
+        ":generic_tf_sources",
+        ":aarch64_arch_sources",
+        # "aarch64/chkstk.S", # if MINGW
+    ],
+)
+
+aarch64_atomic_deps = [
+    atomic_helper_cc_library(
+        name = "atomic_helper_{}_{}_{}".format(pat, size, model),
+        pat = pat,
+        size = size,
+        model = model,
+    )
+    for pat in ["cas", "swp", "ldadd", "ldclr", "ldeor", "ldset"]
+    for size in [1, 2, 4, 8, 16]
+    for model in [1, 2, 3, 4, 5]
+    if pat == "cas" or size != 16
+]
+
+cc_library(
+    name = "aarch64_atomic",
+    deps = aarch64_atomic_deps,
+)
+
 cc_library(
     name = "builtins",
-    srcs = [":x86_64_sources"],
+    # srcs = [":x86_64_sources"],
+    srcs = [":aarch64_sources"],
     copts = [
         "-nostdinc",
     ],
@@ -234,6 +273,14 @@ cc_library(
         "int_mulv_impl.inc",
         "int_to_fp_impl.inc",
         "cpu_model/cpu_model.h",
+
+        # AArch64
+        "cpu_model/AArch64CPUFeatures.inc",
+        "cpu_model/aarch64/hwcap.inc",
+        "cpu_model/aarch64/fmv/mrs.inc",
+        "cpu_model/aarch64/fmv/getauxval.inc",
+        # "cpu_model/aarch64/lse_atomics/atomic_helper.inc",
+        "cpu_model/aarch64/lse_atomics/getauxval.inc",
     ],
     hdrs = [
         "assembly.h",
@@ -247,11 +294,17 @@ cc_library(
         "int_to_fp.h",
         "int_types.h",
         "int_util.h",
+
+        # AArch64
+        "cpu_model/aarch64.h",
     ],
     features = ["-default_compile_flags"],
     deps = [
         "//lib:builtin_headers",
         "//lib:c",
+
+        # AArch64
+        ":aarch64_atomic",
     ],
     visibility = ["//visibility:public"],
 )
