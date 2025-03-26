@@ -186,9 +186,9 @@ filegroup(
         "fixunsxfdi.c",
         "fixunsxfsi.c",
         "fixunsxfti.c",
-        "floatdixf.c",
+        "floatdixf.c", # if not android
         "floattixf.c",
-        "floatundixf.c",
+        "floatundixf.c", # if not win32
         "floatuntixf.c",
         "mulxc3.c",
         "powixf2.c",
@@ -198,18 +198,25 @@ filegroup(
 filegroup(
     name = "x86_64_sources",
     srcs = [
+        ":srcs",
+        ":generic_tf_sources",
+        ":x86_arch_sources",
+        ":x86_80_bit_sources",
+
         "x86_64/floatdidf.c",
         "x86_64/floatdisf.c",
-        "x86_64/floatundidf.S",
-        "x86_64/floatundisf.S",
-        "x86_64/floatdixf.c",
-        "x86_64/floatundixf.S",
+        "x86_64/floatundidf.S", # if not WIN32
+        "x86_64/floatundisf.S", # if not WIN32
+        "x86_64/floatdixf.c",  # if not ANDROID
+        "x86_64/floatundixf.S",  # if not ANDROID and not WIN32
+
+        # "x86_64/chkstk.S" # if WIN32
     ],
 )
 
 cc_library(
     name = "builtins",
-    srcs = [":srcs", ":generic_tf_sources", ":x86_arch_sources", ":x86_80_bit_sources", ":x86_64_sources"],
+    srcs = [":x86_64_sources"],
     copts = [
         "-nostdinc",
     ],
