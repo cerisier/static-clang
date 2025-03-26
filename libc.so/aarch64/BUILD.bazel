@@ -1,0 +1,22 @@
+cc_import(
+    name = "libc",
+    interface_library = "libc.so",
+    system_provided = True,
+    visibility = ["//visibility:public"],
+)
+
+cc_import(
+    name = "libdl",
+    interface_library = "libdl.so",
+    system_provided = True,
+    visibility = ["//visibility:public"],
+)
+
+cc_import(
+    name = "libpthread",
+    interface_library = "libpthread.so",
+    system_provided = True,
+    visibility = ["//visibility:public"],
+)
+
+exports_files(["ld.so"])
