@@ -20,6 +20,7 @@ LOCAL_DEFINES = [
 ]
 
 CFLAGS = [
+    "-nostdinc",
     "-Wa,--noexecstack",
     "-fvisibility=hidden",
     "-fvisibility-inlines-hidden",
@@ -50,6 +51,10 @@ cc_library(
         "src/Unwind-seh.cpp",
         "src/Unwind_AIXExtras.cpp",
     ],
+    deps = [
+        "//lib:builtin_headers",
+        "//lib:c",
+    ],
     visibility = ["//visibility:public"],
 )
 
@@ -78,6 +83,10 @@ cc_library(
         "src/UnwindRegistersRestore.S",
         "src/UnwindRegistersSave.S",
         "src/gcc_personality_v0.c",
+    ],
+    deps = [
+        "//lib:builtin_headers",
+        "//lib:c",
     ],
     visibility = ["//visibility:public"],
 )

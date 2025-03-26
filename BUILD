@@ -9,17 +9,12 @@ cc_binary(
     name = "main",
     srcs = ["main.cc"],
     copts = [
-        "-fno-builtin",
+        "-nostdinc",
         "-std=c++23",
     ],
     linkopts = [
-        "-nodefaultlibs",
-        "-nobuiltininc",
-        "-nostdinc",
-        "-nostdinc++",
-        # "-nostartfiles",
-        "-nostdlib",
-        "-nostdlibinc",
+        "-nostdlib", # Implies "-nodefaultlibs", and "-nostartfiles".
+        # "--sysroot=/dev/null",
         "-lc",
     ],
     deps = [

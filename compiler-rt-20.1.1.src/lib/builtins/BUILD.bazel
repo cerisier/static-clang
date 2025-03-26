@@ -210,6 +210,9 @@ filegroup(
 cc_library(
     name = "builtins",
     srcs = [":srcs", ":generic_tf_sources", ":x86_arch_sources", ":x86_80_bit_sources", ":x86_64_sources"],
+    copts = [
+        "-nostdinc",
+    ],
     textual_hdrs = [
         "fp_add_impl.inc",
         "fp_compare_impl.inc",
@@ -237,6 +240,10 @@ cc_library(
         "int_to_fp.h",
         "int_types.h",
         "int_util.h",
+    ],
+    deps = [
+        "//lib:builtin_headers",
+        "//lib:c",
     ],
     visibility = ["//visibility:public"],
 )

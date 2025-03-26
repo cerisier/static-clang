@@ -1,5 +1,8 @@
 cc_library(
     name = "init",
+    copts = [
+        "-nostdinc",
+    ],
     srcs = ["libc/glibc/csu/init.c"],
     visibility = ["//visibility:public"],
 )
@@ -10,6 +13,7 @@ cc_library(
         "libc/glibc/csu/abi-note.S",
     ],
     copts = [
+        "-nostdinc",
         "-Wa,--noexecstack",
     ],
     local_defines = [
@@ -46,6 +50,7 @@ cc_library(
     name = "start",
     srcs = ["libc/glibc/sysdeps/x86_64/start.S"],
     copts = [
+        "-nostdinc",
         "-Wno-nonportable-include-path",
         "-Wa,--noexecstack",
         "-include",
@@ -132,11 +137,12 @@ cc_library(
 )
 
 cc_library(
-    name = "libcinclude",
+    name = "builtin_headers",
     includes = [
         "include",
     ],
-    hdrs = glob(["include/*"]),
+    hdrs = glob(["include/**"]),
+    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -145,16 +151,15 @@ cc_library(
     includes = [
         "libc/include/x86_64-linux-gnu",
         "libc/include/generic-glibc",
-        # "libc/include/{arch}-linux-any",  # non-existent for x86_64
+        "libc/include/x86-linux-any",
         "libc/include/any-linux-any",
     ],
     hdrs = glob([
         "libc/include/x86_64-linux-gnu/**",
         "libc/include/generic-glibc/**",
-        # "libc/include/{arch}-linux-any/**",
+        "libc/include/x86-linux-any/**",
         "libc/include/any-linux-any/**",
     ]),
-    # deps = [":libcinclude"],
     visibility = ["//visibility:public"],
 )
 
@@ -176,7 +181,6 @@ cc_library(
     ],
     copts = [
         "-nostdinc",
-        "-nostdinc++",
         "-std=c++23",
         "-Wno-user-defined-literals",
         "-Wno-covered-switch-default",
