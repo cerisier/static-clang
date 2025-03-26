@@ -55,6 +55,7 @@ cc_library(
         "//lib:builtin_headers",
         "//lib:c",
     ],
+    features = ["-default_compile_flags"],
     visibility = ["//visibility:public"],
 )
 
@@ -64,6 +65,7 @@ cc_library(
         "-std=c99",
         "-fexceptions",
     ],
+    features = ["-default_compile_flags"],
     local_defines = LOCAL_DEFINES,
     hdrs = [
         ":headers",

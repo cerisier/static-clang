@@ -248,6 +248,7 @@ cc_library(
         "int_types.h",
         "int_util.h",
     ],
+    features = ["-default_compile_flags"],
     deps = [
         "//lib:builtin_headers",
         "//lib:c",
